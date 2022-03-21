@@ -1,4 +1,4 @@
-name: "GoDoc Action"
+name: "EK GoDoc Action"
 description: "Action for invoking documentation generation on pkg.go.dev"
 author: "ESSENTIALKAOS"
 
