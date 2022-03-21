@@ -21,10 +21,17 @@ runs:
         if [[ $GITHUB_REF == refs/tags/* ]] ; then
           full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
           major_ver=$(echo ${full_ver} | cut -f1 -d'.')
+
           if [[ ${major_ver} != "v0" && ${major_ver} != "v1" ]] ; then
-            full_ver="${full_ver}+incompatible"
+            full_ver_tag="${full_ver}+incompatible"
+            import_path="${{github.repository}}/${major_ver}"
+          else
+            full_ver_tag="${full_ver}"
+            import_path="${{github.repository}}"
           fi
-          curl -s -m 15 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver}
+
+          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || exit 0
+          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver} || exit 0
         fi
 
     - id: pgkgodev-req
@@ -33,8 +40,15 @@ runs:
         if [[ $GITHUB_REF == refs/tags/* ]] ; then
           full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
           major_ver=$(echo ${full_ver} | cut -f1 -d'.')
+
           if [[ ${major_ver} != "v0" && ${major_ver} != "v1" ]] ; then
-            full_ver="${full_ver}+incompatible"
+            full_ver_tag="${full_ver}+incompatible"
+            import_path="${{github.repository}}/${major_ver}"
+          else
+            full_ver_tag="${full_ver}"
+            import_path="${{github.repository}}"
           fi
-          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver} || exit 0
+
+          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || exit 0
+          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver} || exit 0
         fi
