@@ -1,0 +1,40 @@
+name: "GoDoc Action"
+description: "Action for invoking documentation generation on pkg.go.dev"
+author: "ESSENTIALKAOS"
+
+branding:
+  icon: "book"  
+  color: "white"
+
+inputs:
+  domain: 
+    description: "Source domain"
+    required: false
+    default: "github.com"
+
+runs:
+  using: "composite"
+  steps:
+    - id: gosum-req
+      shell: bash
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]] ; then
+          full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
+          major_ver=$(echo ${full_ver} | cut -f1 -d'.')
+          if [[ ${major_ver} != "v0" && ${major_ver} != "v1" ]] ; then
+            full_ver="${full_ver}+incompatible"
+          fi
+          curl -s -m 15 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver}
+        fi
+
+    - id: pgkgodev-req
+      shell: bash
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]] ; then
+          full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
+          major_ver=$(echo ${full_ver} | cut -f1 -d'.')
+          if [[ ${major_ver} != "v0" && ${major_ver} != "v1" ]] ; then
+            full_ver="${full_ver}+incompatible"
+          fi
+          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver} || exit 0
+        fi
