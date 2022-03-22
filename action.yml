@@ -30,7 +30,10 @@ runs:
             import_path="${{github.repository}}"
           fi
 
+          echo "URL: https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag}"
           curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || exit 0
+
+          echo "URL: https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver}"
           curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver} || exit 0
         fi
 
@@ -49,6 +52,9 @@ runs:
             import_path="${{github.repository}}"
           fi
 
+          echo "URL: https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag}"
           curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || exit 0
+
+          echo "URL: https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver}"
           curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver} || exit 0
         fi
