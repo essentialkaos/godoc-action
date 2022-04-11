@@ -30,15 +30,13 @@ runs:
             import_path="${{github.repository}}"
           fi
 
-          echo -e "Version: $full_ver | Major: $major_ver | Import Path: $import_path\n"
-
           echo -e "[GET] → ${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\n"
-          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || exit 0
-          echo ""
+          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
+          echo -e "\n"
 
           echo -e "[GET] → ${{inputs.domain}}/${import_path}@${full_ver}\n"
-          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver} || exit 0
-          echo ""
+          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver} || :
+          echo -e "\n"
         fi
 
     - id: pgkgodev-req
@@ -56,13 +54,11 @@ runs:
             import_path="${{github.repository}}"
           fi
 
-          echo -e "Version: $full_ver | Major: $major_ver | Import Path: $import_path\n"
-
           echo -e "[POST] → ${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\n"
-          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || exit 0
-          echo ""
+          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
+          echo -e "\n"
 
           echo -e "[POST] → ${{inputs.domain}}/${import_path}@${full_ver}\n"
-          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver} || exit 0
-          echo ""
+          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver} || :
+          echo -e "\n"
         fi
