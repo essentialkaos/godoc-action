@@ -30,11 +30,11 @@ runs:
             import_path="${{github.repository}}"
           fi
 
-          echo -e "[GET] → ${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\n"
+          echo -e "\e[36m[GET]\e[0m → \e[1m${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\e[0m\n"
           curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
           echo -e "\n"
 
-          echo -e "[GET] → ${{inputs.domain}}/${import_path}@${full_ver}\n"
+          echo -e "\e[36m[GET]\e[0m → \e[1m${{inputs.domain}}/${import_path}@${full_ver}\e[0m\n"
           curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver} || :
           echo -e "\n"
         fi
@@ -54,11 +54,9 @@ runs:
             import_path="${{github.repository}}"
           fi
 
-          echo -e "[POST] → ${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\n"
+          echo -e "\e[35m[POST]\e[0m → \e[1m${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\e[0m"
           curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
-          echo -e "\n"
 
-          echo -e "[POST] → ${{inputs.domain}}/${import_path}@${full_ver}\n"
+          echo -e "\e[35m[POST]\e[0m → \e[1m${{inputs.domain}}/${import_path}@${full_ver}\e[0m"
           curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver} || :
-          echo -e "\n"
         fi
