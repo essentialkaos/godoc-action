@@ -16,8 +16,11 @@ runs:
   using: "composite"
   steps:
     - id: gosum-req
+      name: Send requests to sum.golang.org
       shell: bash
       run: |
+        # [gosum-req]
+
         if [[ $GITHUB_REF == refs/tags/* ]] ; then
           full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
           major_ver=$(echo ${full_ver} | cut -f1 -d'.')
@@ -39,8 +42,11 @@ runs:
         fi
 
     - id: pgkgodev-req
+      name: Send requests to pkg.go.dev
       shell: bash
       run: |
+        # [pgkgodev-req]
+
         if [[ $GITHUB_REF == refs/tags/* ]] ; then
           full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
           major_ver=$(echo ${full_ver} | cut -f1 -d'.')
