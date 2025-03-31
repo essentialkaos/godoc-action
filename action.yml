@@ -83,5 +83,5 @@ runs:
           import_path="${{github.repository}}"
 
           echo -e "\e[35m[GET]\e[0m → \e[1m${{inputs.domain}}/${import_path}@${full_ver}\e[0m"
-          curl -s -m 5 https://proxy.golang.org/${{inputs.domain}}/${{github.repository}}/@v/${{full_ver_tag}}.info || :
+          curl -s -m 5 https://proxy.golang.org/${{inputs.domain}}/${{github.repository}}/@v/${full_ver_tag}.info || :
         fi
