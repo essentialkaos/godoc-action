@@ -33,9 +33,11 @@ runs:
             import_path="${{github.repository}}"
           fi
 
-          echo -e "\n\e[36m[GET]\e[0m → \e[1m${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\e[0m\n"
-          curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
-          echo -e "\n"
+          if [[ "${full_ver}" != "${full_ver_tag}" ]] ; then
+            echo -e "\n\e[36m[GET]\e[0m → \e[1m${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\e[0m\n"
+            curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
+            echo -e "\n"
+          fi
 
           echo -e "\e[36m[GET]\e[0m → \e[1m${{inputs.domain}}/${import_path}@${full_ver}\e[0m\n"
           curl -s -m 10 https://sum.golang.org/lookup/${{inputs.domain}}/${import_path}@${full_ver} || :
@@ -59,9 +61,27 @@ runs:
             import_path="${{github.repository}}"
           fi
 
-          echo -e "\n\e[35m[POST]\e[0m → \e[1m${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\e[0m"
-          curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
+          if [[ "${full_ver}" != "${full_ver_tag}" ]] ; then
+            echo -e "\n\e[35m[POST]\e[0m → \e[1m${{inputs.domain}}/${{github.repository}}@${full_ver_tag}\e[0m"
+            curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${{github.repository}}@${full_ver_tag} || :
+          fi
 
           echo -e "\e[35m[POST]\e[0m → \e[1m${{inputs.domain}}/${import_path}@${full_ver}\e[0m"
           curl -s -m 5 -X POST https://pkg.go.dev/fetch/${{inputs.domain}}/${import_path}@${full_ver} || :
+        fi
+
+    - id: golang-proxy-req
+      name: Send request to proxy.golang.org
+      shell: bash
+      run: |
+        # [golang-proxy-req]
+
+        if [[ $GITHUB_REF == refs/tags/* ]] ; then
+          full_ver=$(echo ${GITHUB_REF} | cut -f3 -d'/')
+          major_ver=$(echo ${full_ver} | cut -f1 -d'.')
+          full_ver_tag="${full_ver}"
+          import_path="${{github.repository}}"
+
+          echo -e "\e[35m[GET]\e[0m → \e[1m${{inputs.domain}}/${import_path}@${full_ver}\e[0m"
+          curl -s -m 5 https://proxy.golang.org/${{inputs.domain}}/${{github.repository}}/@v/${{full_ver_tag}}.info || :
         fi
